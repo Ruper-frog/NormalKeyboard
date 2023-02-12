@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace PasswordToKeyGame
+namespace NormalKeyboard
 {
     internal class Keyboard
     {
