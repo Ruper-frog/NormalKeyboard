@@ -1,26 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 
-namespace NormalKeyboard
+namespace PasswordToKeyGame
 {
     internal class Keyboard
     {
-        private string ReadLine;
-
         private int X_Axis;
         private int Y_Axis;
 
         private static bool LeftArrow = false;
         private static bool RightArrow = false;
 
-        public Keyboard(string readLine, int x_Axis, int y_Axis)
+        public Keyboard(int X_Axis, int Y_Axis)
         {
             LeftArrow = false;
             RightArrow = false;
 
-            ReadLine = readLine;
-            X_Axis = x_Axis;
-            Y_Axis = y_Axis;
+            this.X_Axis = X_Axis;
+            this.Y_Axis = Y_Axis;
         }
         private static void KeyBoardFunction(ref string ReadLine, int x, int y)
         {
@@ -33,22 +31,12 @@ namespace NormalKeyboard
 
             do
             {
-                if (ReadLine.Length >= 2)
-                {
-                    if (ReadLine.Substring(ReadLine.Length - 2, 2).CompareTo("  ") == 0)
-                    {
-                        WordLength.RemoveAt(Column);
-                        Column--;
-                        Typed = 0;
-                    }
-                }
                 if (WordLength.Count == 0)
                 {
                     WordLength.Add(Typed);
                     Column = 0;
                     Typed = 0;
                 }
-
                 ConsoleKeyInfo keyInfo = Console.ReadKey(true);
                 keyPressed = keyInfo.Key;
 
@@ -72,7 +60,6 @@ namespace NormalKeyboard
                                     WordLength.RemoveAt(Column);
                                     Column--;
                                 }
-
                                 if (Ctrl)
                                 {
                                     ReadLine = ReadLine.Substring(0, ReadLine.Length - WordLength[Column]);
@@ -106,11 +93,7 @@ namespace NormalKeyboard
 
                             Console.Write(" ");
 
-                            WordLength[Column] += ++Typed;
-                            Column++;
-
-                            WordLength.Add(0);
-                            Typed = 0;
+                            Typed++;
                         }
                         break;
                     case ConsoleKey.RightArrow:
@@ -119,7 +102,6 @@ namespace NormalKeyboard
                     case ConsoleKey.LeftArrow:
                         LeftArrow = true; break;
                 }
-
                 if ((keyInfo.Modifiers & ConsoleModifiers.Shift) != 0)
                     Shift = true;
 
@@ -233,7 +215,17 @@ namespace NormalKeyboard
 
                     default: continue;
                 }
+                if (ReadLine.Length != 0)
+                {
+                    if (ReadLine[ReadLine.Length - 1] == ' ' && !Letter.Equals(' '))
+                    {
+                        WordLength[Column] += Typed;
+                        Column++;
 
+                        WordLength.Add(0);
+                        Typed = 0;
+                    }
+                }
                 ReadLine += Letter;
                 Console.Write(Letter);
 
@@ -245,6 +237,7 @@ namespace NormalKeyboard
         public void Call(ref string ReadLine, ref bool LeftArrowFunction, ref bool RightArrowFunction)
         {
             KeyBoardFunction(ref ReadLine, X_Axis, Y_Axis);
+
             LeftArrowFunction = LeftArrow;
             RightArrowFunction = RightArrow;
         }
